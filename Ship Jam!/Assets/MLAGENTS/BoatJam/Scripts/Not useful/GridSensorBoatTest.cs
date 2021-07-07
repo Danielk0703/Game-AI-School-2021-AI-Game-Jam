@@ -5,11 +5,11 @@ using UnityEngine.Assertions;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Extensions.Sensors;
 
-namespace Unity.MLAgents.Extensions.Sensors
+namespace Unity.MLAgents.Sensors
 {/*
     public class GridSensorBoatTest : GridSensor
     {
-        protected override float[] GetObjectData(GameObject currentColliderGo,
+        /*protected override float[] GetObjectData(GameObject currentColliderGo,
             float typeIndex, float normalized_distance)
         {
             float[] channelValues = new float[ChannelDepth.Length];
@@ -20,6 +20,7 @@ namespace Unity.MLAgents.Extensions.Sensors
 
             if (goRb != null)
             {
+                
                 if (goRb.gameObject.layer == 0)
                 {
                     channelValues[1] = goRb.position.normalized.y;
@@ -28,7 +29,7 @@ namespace Unity.MLAgents.Extensions.Sensors
                         channelValues[1] = 0.0f;
                     }
                 }
-                else if (goRb.gameObject.layer == 9)
+                /*else if (goRb.gameObject.layer == 9)
                 {
                     channelValues[2] = goRb.gameObject.GetComponent<BoatHealth>().m_NormalizedCurrentHealth;
                     if (channelValues[2] < 0f)
@@ -37,8 +38,5 @@ namespace Unity.MLAgents.Extensions.Sensors
                     }
                 }
             }
-            return channelValues;
-        }
-    }
-}*/
+            return channelValues;*/
 }

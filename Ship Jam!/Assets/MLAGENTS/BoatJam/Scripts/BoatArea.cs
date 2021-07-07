@@ -48,6 +48,7 @@ public class BoatArea : MonoBehaviour
 
         // Place agent to a random spawnpoint
         agent.transform.position = spawnPointsTemp[randomIndex].transform.position;
+        //agent.transform.rotation = spawnPointsTemp[randomIndex].transform.rotation;
 
         // Remove this spawnpoint to the temp spawnPoints list
         spawnPointsTemp.RemoveAt(randomIndex);

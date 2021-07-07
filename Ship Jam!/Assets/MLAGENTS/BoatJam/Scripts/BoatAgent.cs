@@ -166,7 +166,7 @@ public class BoatAgent : Agent
         }
         // Place the agent
         m_Area.PlaceAgent(m_AgentRb);
-        transform.LookAt(m_CenterOfMap);
+        //transform.LookAt(m_CenterOfMap);
 
         m_AgentRb.velocity = Vector3.zero;
         m_AgentRb.angularVelocity = Vector3.zero;
@@ -188,9 +188,24 @@ public class BoatAgent : Agent
         // Left Canon rotation ?
         sensor.AddObservation(m_AgentRb.transform.localRotation.y);
 
+        // Left cannon rotation
+        //sensor.AddObservation(TransformDirection(m_LeftFireTransform.z);
+        //Debug.Log("m_LeftFireTransform" + m_LeftFireTransform.localRotation.y);
         // Right Canon rotation
     }
-
+    
+    /// <summary>
+    /// If it's before spamming time we mask the shooting action
+    /// </summary>
+    /// <param name="actionMask"></param>
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        if (Time.time > m_NextFire)
+        {
+            actionMask.SetActionEnabled(2, 0, false);
+            actionMask.SetActionEnabled(2, 1, false);
+        }
+    }
     /// <summary>
     /// Function to move the agent
     /// </summary>
@@ -204,6 +219,7 @@ public class BoatAgent : Agent
         var rotate = act[1];
         var shoot = act[2];
 
+        // Avoid spamming
         if (Time.time > m_NextFire)
         {
             m_PossibleShoot = true;
