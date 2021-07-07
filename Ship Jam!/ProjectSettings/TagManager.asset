@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - shell
+  - cannonball
+  - greenAgent
+  - blueAgent
+  - border
+  - island
   layers:
   - Default
   - TransparentFX
