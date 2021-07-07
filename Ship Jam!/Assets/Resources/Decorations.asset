@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f279601c0fd534c41853f8a6e40fa0fb, type: 3}
+  m_Name: Decorations
+  m_EditorClassIdentifier: 
+  decorationPools:
+  - decorations:
+    - {fileID: 2574858628522144686, guid: 00fecdbae01d3fb40912f437a536bcf7, type: 3}
+    - {fileID: 3214034538267248886, guid: 7ac8a849f9e5be542953537845fc6517, type: 3}
+    - {fileID: 907589607591645645, guid: 84c6e1c91c92c81468ad7ed63a7dfb16, type: 3}
+    rotationAxis: {x: 0, y: 1, z: 0}
+    maxRotationAngle: {x: 360, y: 360, z: 360}
+    placementChance: 0.786
+    maxPlacements: 4
+    landTypePlacement: 3
+  - decorations:
+    - {fileID: 5789691060258108854, guid: c7c05847cdaf7e849a7bb7b577a642c2, type: 3}
+    rotationAxis: {x: 1, y: 1, z: 1}
+    maxRotationAngle: {x: 22.5, y: 360, z: 22.5}
+    placementChance: 1
+    maxPlacements: 5
+    landTypePlacement: 4
+  - decorations:
+    - {fileID: 5801622973537400030, guid: dc8da94a51dd032408aba9d81dffa6f9, type: 3}
+    - {fileID: 1934657624954666866, guid: f22d67591ea6cd946806335a0764d681, type: 3}
+    rotationAxis: {x: 0, y: 0, z: 0}
+    maxRotationAngle: {x: 360, y: 360, z: 360}
+    placementChance: 0.619
+    maxPlacements: 8
+    landTypePlacement: 3
+  - decorations:
+    - {fileID: 8531127778778523879, guid: 2840dc64daa8c4c45aa0854ce2fd9e64, type: 3}
+    rotationAxis: {x: 0, y: 1, z: 0}
+    maxRotationAngle: {x: 360, y: 360, z: 360}
+    placementChance: 0.05
+    maxPlacements: 1
+    landTypePlacement: 4

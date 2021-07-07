@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3284399453435373801}
   - component: {fileID: 5213318373300265509}
   - component: {fileID: 3541486298174185542}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6578334540536473339}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Island
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 6818938756551000527}
   - component: {fileID: 6818938756551000524}
   - component: {fileID: 6818938756551000528}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -166,6 +166,7 @@ MonoBehaviour:
   meshRenderer: {fileID: 6818938756551000524}
   width: 20
   depth: 20
+  m_Decorator: {fileID: 0}
   noiseOffset: {x: 8.695221, y: -1}
   noiseScale: {x: 0.1, y: 0.1}
   amplitude: 4

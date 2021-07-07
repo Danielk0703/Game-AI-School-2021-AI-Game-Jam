@@ -10,7 +10,6 @@ public class IslandGenerator : MonoBehaviour
     public int maxIslandCount = 20;
     public float minIslandRadius = 3;
     public float maxIslandRadius = 8;
-    public float extraDistanceBetweenIslands = 0;
 
     public AnimationCurve scaleDistribution;
 
@@ -20,19 +19,23 @@ public class IslandGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        if (regenerate) {
+        if (regenerate)
+        {
             regenerate = false;
-            foreach (Transform t in transform) {
-                if (Application.isPlaying) {
+            foreach (Transform t in transform)
+            {
+                if (Application.isPlaying)
+                {
                     Destroy(t.gameObject);
                 }
-                else {
-                    #if UNITY_EDITOR
-                        UnityEditor.EditorApplication.delayCall += () =>
-                        {
-                            DestroyImmediate(t.gameObject);
-                        };
-                    #endif
+                else
+                {
+#if UNITY_EDITOR
+                    UnityEditor.EditorApplication.delayCall += () =>
+                    {
+                        DestroyImmediate(t.gameObject);
+                    };
+#endif
                 }
             }
             Generate();
@@ -50,11 +53,13 @@ public class IslandGenerator : MonoBehaviour
         Generate();
     }
 
-    public void Generate() {
+    public void Generate()
+    {
         List<Circle> circles = new List<Circle>();
         int attempts = 500;
 
-        while (attempts > 0 && circles.Count < maxIslandCount) {
+        while (attempts > 0 && circles.Count < maxIslandCount)
+        {
             attempts--;
             Vector2 pos = new Vector2(Random.Range(0, width), Random.Range(0, height));
             float radius = 0;
@@ -64,7 +69,7 @@ public class IslandGenerator : MonoBehaviour
                 {
                     return Mathf.Abs((c.position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - c.radius);
                 });
-                float distToClosestEdge = -extraDistanceBetweenIslands+(circles[0].position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - circles[0].radius;
+                float distToClosestEdge = (circles[0].position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - circles[0].radius;
                 if (distToClosestEdge < minIslandRadius)
                 {
                     //invalid island
@@ -73,7 +78,7 @@ public class IslandGenerator : MonoBehaviour
                 else if (distToClosestEdge > maxIslandRadius)
                 {
                     //place full size island
-                    radius = minIslandRadius + scaleDistribution.Evaluate(Random.value)*(maxIslandRadius-minIslandRadius);
+                    radius = minIslandRadius + scaleDistribution.Evaluate(Random.value) * (maxIslandRadius - minIslandRadius);
                 }
                 else
                 {
@@ -82,10 +87,12 @@ public class IslandGenerator : MonoBehaviour
                     radius = Mathf.Clamp(radius, minIslandRadius, distToClosestEdge);
                 }
             }
-            else {
+            else
+            {
                 radius = minIslandRadius + scaleDistribution.Evaluate(Random.value) * (maxIslandRadius - minIslandRadius);
             }
-            if (radius >= minIslandRadius) {
+            if (radius >= minIslandRadius)
+            {
                 Circle newCircle = new Circle();
                 newCircle.position = pos;
                 newCircle.radius = radius;
@@ -93,14 +100,17 @@ public class IslandGenerator : MonoBehaviour
             }
 
         }
-        foreach (Circle c in circles) {
+        foreach (Circle c in circles)
+        {
             GameObject i = Instantiate(islandPrefab, transform);
             i.transform.localPosition = new Vector3(c.position.x, 0, c.position.y);
             i.transform.localScale = Vector3.one * 2 * c.radius;
         }
 
-        if (!Application.isPlaying) {
-            foreach (IslandMeshGenerator i in GetComponentsInChildren<IslandMeshGenerator>()) {
+        if (!Application.isPlaying)
+        {
+            foreach (IslandMeshGenerator i in GetComponentsInChildren<IslandMeshGenerator>())
+            {
                 i.OnEnable();
             }
         }
