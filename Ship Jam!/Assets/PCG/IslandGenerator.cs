@@ -10,6 +10,7 @@ public class IslandGenerator : MonoBehaviour
     public int maxIslandCount = 20;
     public float minIslandRadius = 3;
     public float maxIslandRadius = 8;
+    public float extraDistanceBetweenIslands = 0;
 
     public AnimationCurve scaleDistribution;
 
@@ -63,7 +64,7 @@ public class IslandGenerator : MonoBehaviour
                 {
                     return Mathf.Abs((c.position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - c.radius);
                 });
-                float distToClosestEdge = (circles[0].position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - circles[0].radius;
+                float distToClosestEdge = -extraDistanceBetweenIslands+(circles[0].position - pos).ToVec3().Length(DistanceMethod.EUCLIDEAN) - circles[0].radius;
                 if (distToClosestEdge < minIslandRadius)
                 {
                     //invalid island
