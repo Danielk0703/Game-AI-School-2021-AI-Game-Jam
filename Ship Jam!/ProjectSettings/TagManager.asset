@@ -10,6 +10,7 @@ TagManager:
   - blueAgent
   - border
   - island
+  - islandObstacle
   layers:
   - Default
   - TransparentFX
