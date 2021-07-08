@@ -9,7 +9,9 @@ public class IslandMeshGenerator : MonoBehaviour
     [SerializeField]
     private MeshFilter meshFilter;
     [SerializeField]
-    private MeshCollider meshCollider;
+    private MeshCollider boatCollider;
+    [SerializeField]
+    private MeshCollider gridSensorCollider;
     [SerializeField]
     private MeshRenderer meshRenderer;
     [SerializeField]
@@ -37,7 +39,7 @@ public class IslandMeshGenerator : MonoBehaviour
     public void OnEnable()
     {
         meshFilter = meshFilter ?? GetComponent<MeshFilter>();
-        meshCollider = meshCollider ?? GetComponent<MeshCollider>();
+        boatCollider = boatCollider ?? GetComponent<MeshCollider>();
         meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
         if (randomiseOnEnable) { noiseOffset.x = Random.Range(0, 100f);noiseOffset.y = Random.Range(0, 100f); }
         GeneratePlane();
@@ -55,11 +57,13 @@ public class IslandMeshGenerator : MonoBehaviour
             noiseOffset.x = Random.Range(0, 100f);
         }
 
-        Mesh colMesh = GenerateMesh(4);
+        Mesh colMesh = GenerateMesh(2);
         Mesh gfxMesh = GenerateMesh(1);
+        
 
         meshFilter.mesh = gfxMesh;
-        meshCollider.sharedMesh = colMesh;
+        boatCollider.sharedMesh = colMesh;
+        gridSensorCollider.sharedMesh = colMesh;
 
         ResetTexture();
         if (Application.isPlaying)
@@ -88,7 +92,7 @@ public class IslandMeshGenerator : MonoBehaviour
                     {
                         //place stuff on grass here
                         //you might want to do something different here but I placed a load of spheres as an example :)
-                        Instantiate(tree, WorldPoint(x, y), Quaternion.identity, transform);
+                        //Instantiate(tree, WorldPoint(x, y), Quaternion.identity, transform);
                     }
                     texture.SetPixel(x, y, colour);
                 }
@@ -111,7 +115,7 @@ public class IslandMeshGenerator : MonoBehaviour
 
     private void OnValidate()
     {
-        if (meshFilter != null && meshCollider!=null && gaussianDistribution != null) {
+        if (meshFilter != null && boatCollider!=null && gaussianDistribution != null) {
             GeneratePlane();
         }
     }
@@ -207,5 +211,9 @@ public class IslandMeshGenerator : MonoBehaviour
             };
 #endif
         }
+    }
+
+    public void RepositionGridSensorCollider() {
+        gridSensorCollider.transform.position = new Vector3(transform.position.x, -2.36f, transform.position.z);
     }
 }

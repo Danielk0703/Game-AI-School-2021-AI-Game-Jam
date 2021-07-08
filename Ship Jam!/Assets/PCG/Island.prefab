@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2164311682604969338
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6325016416536189124}
+  - component: {fileID: 1190390533115514953}
+  m_Layer: 0
+  m_Name: GridSensorCollider
+  m_TagString: island
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6325016416536189124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164311682604969338}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: 0}
+  m_LocalScale: {x: 0.1976665, y: 0.1976665, z: 0.1976665}
+  m_Children: []
+  m_Father: {fileID: 6578334540536473339}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1190390533115514953
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164311682604969338}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4977410873538527586
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,9 +136,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6578334540536473339}
+  - component: {fileID: 3818170171637695906}
   m_Layer: 0
   m_Name: Island
-  m_TagString: island
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,9 +157,38 @@ Transform:
   m_Children:
   - {fileID: 3284399453435373801}
   - {fileID: 6818938756551000529}
+  - {fileID: 6325016416536189124}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3818170171637695906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578334540536473319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981db9badfad4804e943add28eb8a38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomiseOnEnable: 1
+  meshFilter: {fileID: 6818938756551000527}
+  boatCollider: {fileID: 6818938756551000528}
+  gridSensorCollider: {fileID: 1190390533115514953}
+  meshRenderer: {fileID: 6818938756551000524}
+  width: 10
+  depth: 10
+  noiseOffset: {x: 25.96, y: -1}
+  noiseScale: {x: 0.1, y: 0.1}
+  amplitude: 4
+  amplitudeMultiplierAboveSeaLevel: 2
+  rounding: 0
+  scale: 0.6
+  defaultMaterial: {fileID: 2100000, guid: 143b723609cf1cf4f87d7adc4bc959e8, type: 2}
+  tree: {fileID: 8144403338633733443, guid: 0012eb54cdafb1344ade2d68a2e49cd7, type: 3}
+  gaussianDistribution: {fileID: 2800000, guid: a6fa78e2340d9794eb49f94d8db1a8c2, type: 3}
 --- !u!1 &6818938756551000525
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,13 +198,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6818938756551000529}
-  - component: {fileID: 6818938756551000526}
   - component: {fileID: 6818938756551000527}
   - component: {fileID: 6818938756551000524}
   - component: {fileID: 6818938756551000528}
   m_Layer: 0
   m_Name: Mesh
-  m_TagString: island
+  m_TagString: islandObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,33 +222,6 @@ Transform:
   m_Father: {fileID: 6578334540536473339}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6818938756551000526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6818938756551000525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 981db9badfad4804e943add28eb8a38e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  randomiseOnEnable: 1
-  meshFilter: {fileID: 6818938756551000527}
-  meshCollider: {fileID: 6818938756551000528}
-  meshRenderer: {fileID: 6818938756551000524}
-  width: 20
-  depth: 20
-  noiseOffset: {x: 8.695221, y: -1}
-  noiseScale: {x: 0.1, y: 0.1}
-  amplitude: 4
-  amplitudeMultiplierAboveSeaLevel: 2
-  rounding: 0
-  scale: 0.3
-  defaultMaterial: {fileID: 2100000, guid: 143b723609cf1cf4f87d7adc4bc959e8, type: 2}
-  tree: {fileID: 8144403338633733443, guid: 0012eb54cdafb1344ade2d68a2e49cd7, type: 3}
-  gaussianDistribution: {fileID: 2800000, guid: a6fa78e2340d9794eb49f94d8db1a8c2, type: 3}
 --- !u!33 &6818938756551000527
 MeshFilter:
   m_ObjectHideFlags: 0
