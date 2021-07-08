@@ -33,7 +33,7 @@ public class CannonballExplosion : MonoBehaviour
             {
                 // Deal this damage to the tank.
                 targetHealth.TakeDamage(50f);
-                m_AgentLauncher.AddReward(.4f);
+                m_AgentLauncher.AddReward(20f);
                 // Unparent the particles from the shell.
                 m_ExplosionParticles.transform.parent = null;
 
@@ -44,8 +44,9 @@ public class CannonballExplosion : MonoBehaviour
                 ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
                 Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
             }
-            else{
-                m_AgentLauncher.AddReward(-.1f);
+            else
+            {
+                m_AgentLauncher.AddReward(-5f);
             }
 
             // Destroy the shell.

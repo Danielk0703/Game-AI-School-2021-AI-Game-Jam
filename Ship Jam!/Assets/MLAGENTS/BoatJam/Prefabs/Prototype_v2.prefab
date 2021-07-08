@@ -1126,6 +1126,7 @@ MonoBehaviour:
   - {fileID: 7861655715055513357}
   assets: []
   assetsStore: {fileID: 0}
+  mapBoundsCollider: {fileID: 7861655713698118118}
   islandGenerator: {fileID: 791753773456290965}
 --- !u!1 &7861655714674842253
 GameObject:
@@ -1696,7 +1697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 3
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 3
@@ -1731,6 +1732,7 @@ MonoBehaviour:
   MaxStep: 8000
   team: 0
   m_AgentRb: {fileID: 7861655715055513351}
+  m_EnemyAgentRb: {fileID: 7861655715336278338}
   m_Speed: 1
   m_RotationSpeed: 90
   m_PossibleShoot: 0
@@ -2169,7 +2171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 3
+    VectorObservationSize: 12
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 3
@@ -2204,6 +2206,7 @@ MonoBehaviour:
   MaxStep: 8000
   team: 0
   m_AgentRb: {fileID: 7861655715336278338}
+  m_EnemyAgentRb: {fileID: 7861655715055513351}
   m_Speed: 1
   m_RotationSpeed: 90
   m_PossibleShoot: 0
@@ -2752,6 +2755,22 @@ PrefabInstance:
     - target: {fileID: 7486928598654145167, guid: d9d442ebb38005947a369140044de4bf, type: 3}
       propertyPath: minIslandRadius
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486928598654145167, guid: d9d442ebb38005947a369140044de4bf, type: 3}
+      propertyPath: extraDistanceBetweenIslands
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486928598654145264, guid: d9d442ebb38005947a369140044de4bf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486928598654145264, guid: d9d442ebb38005947a369140044de4bf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486928598654145264, guid: d9d442ebb38005947a369140044de4bf, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7486928598654145264, guid: d9d442ebb38005947a369140044de4bf, type: 3}
       propertyPath: m_LocalPosition.x

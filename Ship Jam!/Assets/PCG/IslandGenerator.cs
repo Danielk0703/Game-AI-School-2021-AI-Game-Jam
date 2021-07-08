@@ -45,6 +45,7 @@ public class IslandGenerator : MonoBehaviour
     }
     public void Generate(int seed)
     {
+        Debug.LogError("Generate");
         Random.InitState(seed);
         foreach (Transform t in transform)
         {

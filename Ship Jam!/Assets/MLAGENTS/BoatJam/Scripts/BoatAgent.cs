@@ -23,6 +23,7 @@ public class BoatAgent : Agent
     public Team team;
 
     public Rigidbody m_AgentRb;
+    public Rigidbody m_EnemyAgentRb;
 
     public float m_Speed;
     public float m_RotationSpeed;
@@ -164,6 +165,7 @@ public class BoatAgent : Agent
 
         if (m_PlayerIndex == 0)
         {
+            Debug.LogError("OnEpisodeBegin " + this.name + this.transform.parent.name, this.gameObject);
             m_Area.PlaceAssets();
         }
         // Place the agent
@@ -188,7 +190,12 @@ public class BoatAgent : Agent
 
         // TODO: Left and right cannon rotation?
         // Left Canon rotation ?
-        sensor.AddObservation(m_AgentRb.transform.localRotation.y);
+        Vector3 scaleVec = new Vector3 (1/m_Area.mapBoundsCollider.bounds.size.x, 1, 1/m_Area.mapBoundsCollider.bounds.size.z);
+        Vector3 myNormalizedPos = Vector3.Scale(m_AgentRb.transform.localPosition, scaleVec);
+        Vector3 enemyNormalizedPos = Vector3.Scale(m_EnemyAgentRb.transform.localPosition, scaleVec);
+        sensor.AddObservation(myNormalizedPos);
+        sensor.AddObservation(m_AgentRb.transform.rotation);
+        sensor.AddObservation(enemyNormalizedPos);
 
         // Left cannon rotation
         //sensor.AddObservation(TransformDirection(m_LeftFireTransform.z);
@@ -219,22 +226,26 @@ public class BoatAgent : Agent
 
     public void AgentActionConituous(ActionBuffers vectorAction)
     {
-        float speed = 5f * Time.deltaTime;
-        float rotateSpeed = 180f * Time.deltaTime;
-        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed;
-        transform.localPosition += transform.forward * moveVal;
-        AddReward(-1/(15+moveVal) * Time.deltaTime);
-        transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed);
-
-        if(Time.time > m_NextFire && Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.25f)
+        const float speed = 5f ;
+        const float rotateSpeed = 180f;
+        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed * Time.deltaTime;
+        transform.localPosition += transform.forward * moveVal ;
+        AddReward(moveVal);
+        AddReward(1f/(1f + Vector3.SqrMagnitude(m_AgentRb.transform.localPosition - m_EnemyAgentRb.transform.localPosition)));
+        transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed  * Time.deltaTime);
+        if(Time.time > m_NextFire)
         {
-            // Left Small shoot (20)
-            m_ShootForce = 20f;
-            // Update the time when our player can fire next
-            m_NextFire = Time.time + 1.5f;
-            shootCannonball(m_ShootForce, Mathf.Sign(vectorAction.ContinuousActions[2]) > 0? "right" : "left");
-            m_PossibleShoot = false;
+            m_PossibleShoot = true;
+            if(Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.25f)
+            {
+                // Left Small shoot (20)
+                m_ShootForce = 20f;
+                // Update the time when our player can fire next
+                m_NextFire = Time.time + 1.5f;
+                shootCannonball(m_ShootForce, Mathf.Sign(vectorAction.ContinuousActions[2]) > 0? "right" : "left");
+                m_PossibleShoot = false;
 
+            }
         }
     }
 
@@ -452,11 +463,11 @@ public class BoatAgent : Agent
     }
 
     private void OnCollisionStay(Collision other) {
-        if(other.gameObject.CompareTag("border") || other.gameObject.CompareTag("island") 
+        if(other.gameObject.CompareTag("border") || other.gameObject.CompareTag("island") || other.gameObject.CompareTag("islandObstacle") 
             || other.gameObject.CompareTag("greenAgent") || other.gameObject.CompareTag("blueAgent"))
         {
             m_BoatHealthSystem.TakeDamage(10f * Time.deltaTime);
-            AddReward(-0.25f * Time.deltaTime);
+            AddReward(-10*Time.deltaTime);
         }
     }
 }

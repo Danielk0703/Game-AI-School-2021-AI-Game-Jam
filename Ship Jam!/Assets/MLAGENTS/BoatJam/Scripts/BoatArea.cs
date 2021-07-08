@@ -22,6 +22,8 @@ public class BoatArea : MonoBehaviour
     public List<GameObject> assets = new List<GameObject>();
     public GameObject assetsStore;
 
+    public Collider mapBoundsCollider;
+
     public IslandGenerator islandGenerator;
 
     private void Awake()
@@ -42,6 +44,7 @@ public class BoatArea : MonoBehaviour
         //{
         if (spawnPointsTemp.Count <= 0)
         {
+            Debug.LogError("No spawn Points");
             // Not enough spawn points
             return;
         }
@@ -85,6 +88,8 @@ public class BoatArea : MonoBehaviour
             // Remove this spawnpoint to the temp spawnPoints list
             environmentSpawnPointsTemp.RemoveAt(randomIndex);
         }
+
+        islandGenerator?.Generate();
     }
 
     /// <summary>
@@ -102,17 +107,14 @@ public class BoatArea : MonoBehaviour
         {
             if (ps.agentScript.team == touchedTeam)
             {
-                ps.agentScript.AddReward(-1);
+                ps.agentScript.AddReward(-100);
             }
             else
             {
-                ps.agentScript.AddReward(1f + ps.agentScript.timePenalty);
+                ps.agentScript.AddReward(100f);
             }
             ps.agentScript.EndEpisode();  //all agents need to be reset
         }
-        
-        islandGenerator?.Regenerate();
-
     }
 
     /// <summary>
