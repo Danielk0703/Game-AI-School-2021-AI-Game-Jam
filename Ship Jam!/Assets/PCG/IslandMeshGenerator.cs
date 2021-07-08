@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum LandType { None, DeepSea, ShallowSea, Sand, Meadow }
 public class IslandMeshGenerator : MonoBehaviour
 {
     public bool randomiseOnEnable = true;
@@ -33,6 +34,12 @@ public class IslandMeshGenerator : MonoBehaviour
     Material materialInstance;
     float[,] heightMap;
 
+    [SerializeField]
+    private IslandDecorator m_Decorator;
+
+    public float Width { get { return width; } }
+    public float Depth { get { return depth; } }
+    public float[,] HeightMap { get { return heightMap; } }
 
     public GameObject tree;
 
@@ -41,25 +48,29 @@ public class IslandMeshGenerator : MonoBehaviour
         meshFilter = meshFilter ?? GetComponent<MeshFilter>();
         boatCollider = boatCollider ?? GetComponent<MeshCollider>();
         meshRenderer = meshRenderer ?? GetComponent<MeshRenderer>();
-        if (randomiseOnEnable) { noiseOffset.x = Random.Range(0, 100f);noiseOffset.y = Random.Range(0, 100f); }
+        if (randomiseOnEnable) { noiseOffset.x = Random.Range(0, 100f); noiseOffset.y = Random.Range(0, 100f); }
         GeneratePlane();
+        m_Decorator = GetComponent<IslandDecorator>();
+        m_Decorator.Decorate();
     }
-
     public Texture2D gaussianDistribution;
-    private float EdgeDistance(float w, float d) {
+    private float EdgeDistance(float w, float d)
+    {
         float x = (float)w / (width + 1);
         float y = (float)d / (depth + 1);
-        return gaussianDistribution.GetPixel((int)(x*gaussianDistribution.width), (int)(y * gaussianDistribution.height)).r;
+        return gaussianDistribution.GetPixel((int)(x * gaussianDistribution.width), (int)(y * gaussianDistribution.height)).r;
     }
 
     private void GeneratePlane()
-    {if (noiseOffset.x == -1 && noiseOffset.y == -1) {
+    {
+        if (noiseOffset.x == -1 && noiseOffset.y == -1)
+        {
             noiseOffset.x = Random.Range(0, 100f);
         }
 
         Mesh colMesh = GenerateMesh(2);
         Mesh gfxMesh = GenerateMesh(1);
-        
+
 
         meshFilter.mesh = gfxMesh;
         boatCollider.sharedMesh = colMesh;
@@ -73,26 +84,19 @@ public class IslandMeshGenerator : MonoBehaviour
             {
                 for (int y = 0; y < depth; y++)
                 {
-                    Color colour = new Color(42 / 255f, 181 / 255f, 65 / 255f);
-                    if (heightMap[x, y] < ((amplitude * amplitudeMultiplierAboveSeaLevel) - transform.position.y) / 2.5f)
+                    Color colour = Color.white;
+                    LandType currentLandType = GetLandTypeAt(x, y);
+                    if (currentLandType == LandType.Sand)
                     {
                         colour = new Color(1, 246 / 255f, 150 / 255f);
-                        if (heightMap[x, y] > 0)
-                        {//above water level
-                         //place stuff on sand here
-                        }
-
                     }
-                    else if (heightMap[x, y] > ((amplitude * amplitudeMultiplierAboveSeaLevel) - transform.position.y) / 1.8f)
+                    else if (currentLandType == LandType.Meadow)
                     {
-                        colour = new Color(0.3f, 0.3f, 0.3f);
-                        //place stuff on rock here
+                        colour = new Color(42 / 255f, 181 / 255f, 65 / 255f);
                     }
-                    else
+                    else if (currentLandType == LandType.ShallowSea)
                     {
-                        //place stuff on grass here
-                        //you might want to do something different here but I placed a load of spheres as an example :)
-                        //Instantiate(tree, WorldPoint(x, y), Quaternion.identity, transform);
+                        colour = new Color(1, 123 / 255f, 75 / 255f);
                     }
                     texture.SetPixel(x, y, colour);
                 }
@@ -104,37 +108,55 @@ public class IslandMeshGenerator : MonoBehaviour
         }
 
     }
-
-    public Vector3 WorldPoint(int x, int y) {
-        return transform.position + scale * new Vector3(
-                        ((float)x - (width / 2.0f)) * transform.lossyScale.x,
-                        heightMap[x, y] * transform.lossyScale.y,
-                        ((float)y - (depth / 2.0f)) * transform.lossyScale.z
+    public LandType GetLandTypeAt(int x, int y)
+    {
+        if (heightMap[x, y] < ((amplitude * amplitudeMultiplierAboveSeaLevel) - transform.position.y) / 6f)
+        {
+            return LandType.DeepSea;
+        }
+        else if (heightMap[x, y] < ((amplitude * amplitudeMultiplierAboveSeaLevel) - transform.position.y) / 3f)
+        {
+            return LandType.Sand;
+        }
+        else
+        {
+            return LandType.Meadow;
+        }
+    }
+    public Vector3 WorldPoint(int x, int y)
+    {
+        return meshFilter.transform.position + scale * new Vector3(
+                        ((float)x - (width / 2.0f)) * meshFilter.transform.lossyScale.x,
+                        heightMap[x, y] * meshFilter.transform.lossyScale.y,
+                        ((float)y - (depth / 2.0f)) * meshFilter.transform.lossyScale.z
                         );
     }
 
     private void OnValidate()
     {
-        if (meshFilter != null && boatCollider!=null && gaussianDistribution != null) {
+        if (meshFilter != null && boatCollider != null && gaussianDistribution != null)
+        {
             GeneratePlane();
         }
     }
 
 
-    Mesh GenerateMesh(int crunchLevel) {
-        int depth = (int)((float)this.depth/(crunchLevel));
-        int width = (int)((float)this.width/(crunchLevel));
+    Mesh GenerateMesh(int crunchLevel)
+    {
+        int depth = (int)((float)this.depth / (crunchLevel));
+        int width = (int)((float)this.width / (crunchLevel));
         float[,] heightMap = new float[width + 1, depth + 1];
         for (int d = 0; d <= depth; d++)
         {
             for (int w = 0; w <= width; w++)
             {
-                heightMap[w, d] = amplitude * Mathf.Lerp(Mathf.PerlinNoise(((w*crunchLevel) + noiseOffset.x) * noiseScale.x, ((d*crunchLevel) + noiseOffset.y) * noiseScale.y)
-                    * EdgeDistance(w*crunchLevel, d*crunchLevel), EdgeDistance(w*crunchLevel, d*crunchLevel), rounding);
+                heightMap[w, d] = amplitude * Mathf.Lerp(Mathf.PerlinNoise(((w * crunchLevel) + noiseOffset.x) * noiseScale.x, ((d * crunchLevel) + noiseOffset.y) * noiseScale.y)
+                    * EdgeDistance(w * crunchLevel, d * crunchLevel), EdgeDistance(w * crunchLevel, d * crunchLevel), rounding);
                 if (transform.position.y + heightMap[w, d] >= 0) { heightMap[w, d] *= amplitudeMultiplierAboveSeaLevel; }
             }
         }
-        if (crunchLevel == 1) {
+        if (crunchLevel == 1)
+        {
             this.heightMap = heightMap;
         }
 
@@ -147,7 +169,7 @@ public class IslandMeshGenerator : MonoBehaviour
         {
             for (int w = 0; w <= width; w++)
             {
-                vertices[i] = new Vector3(w *crunchLevel, heightMap[w, d], d * crunchLevel) - new Vector3((width / 2f) * (crunchLevel), 0, (depth / 2f) * (crunchLevel));
+                vertices[i] = new Vector3(w * crunchLevel, heightMap[w, d], d * crunchLevel) - new Vector3((width / 2f) * (crunchLevel), 0, (depth / 2f) * (crunchLevel));
                 vertices[i] *= scale;
                 i++;
             }
@@ -213,7 +235,8 @@ public class IslandMeshGenerator : MonoBehaviour
         }
     }
 
-    public void RepositionGridSensorCollider() {
+    public void RepositionGridSensorCollider()
+    {
         gridSensorCollider.transform.position = new Vector3(transform.position.x, -2.36f, transform.position.z);
     }
 }
