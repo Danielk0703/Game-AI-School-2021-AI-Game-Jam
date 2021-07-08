@@ -22,6 +22,8 @@ public class BoatArea : MonoBehaviour
     public List<GameObject> assets = new List<GameObject>();
     public GameObject assetsStore;
 
+    public IslandGenerator islandGenerator;
+
     private void Awake()
     {
         // Reset the spawnlist for the first time
@@ -108,6 +110,8 @@ public class BoatArea : MonoBehaviour
             }
             ps.agentScript.EndEpisode();  //all agents need to be reset
         }
+        
+        islandGenerator?.Regenerate();
 
     }
 

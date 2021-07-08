@@ -22,21 +22,26 @@ public class IslandGenerator : MonoBehaviour
     {
         if (regenerate) {
             regenerate = false;
-            foreach (Transform t in transform) {
-                if (Application.isPlaying) {
-                    Destroy(t.gameObject);
-                }
-                else {
-                    #if UNITY_EDITOR
-                        UnityEditor.EditorApplication.delayCall += () =>
-                        {
-                            DestroyImmediate(t.gameObject);
-                        };
-                    #endif
-                }
-            }
-            Generate();
+            Regenerate();
         }
+    }
+
+    public void Regenerate()
+    {
+        foreach (Transform t in transform) {
+            if (Application.isPlaying) {
+                Destroy(t.gameObject);
+            }
+            else {
+                #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.delayCall += () =>
+                    {
+                        DestroyImmediate(t.gameObject);
+                    };
+                #endif
+            }
+        }
+        Generate();
     }
 
     internal class Circle
@@ -105,6 +110,13 @@ public class IslandGenerator : MonoBehaviour
             }
         }
 
+    }
+
+    private void OnDrawGizmos()
+    {
+        Vector3 center = transform.position + new Vector3(width/2, 0 , height/2);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center,  new Vector3(width, 1, height));
     }
 
 

@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 6578334540536473339}
   m_Layer: 0
   m_Name: Island
-  m_TagString: Untagged
+  m_TagString: island
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6818938756551000528}
   m_Layer: 0
   m_Name: Mesh
-  m_TagString: Untagged
+  m_TagString: island
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

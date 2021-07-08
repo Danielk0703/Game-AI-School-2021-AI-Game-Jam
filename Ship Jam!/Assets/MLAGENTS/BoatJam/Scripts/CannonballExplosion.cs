@@ -29,21 +29,24 @@ public class CannonballExplosion : MonoBehaviour
             BoatHealth targetHealth = targetRigidbody.GetComponent<BoatHealth>();
 
             // If there is no BoatHealth script attached to the gameobject, go on to the next collider.
-            if (!targetHealth)
-                Destroy(gameObject);
+            if (targetHealth)
+            {
+                // Deal this damage to the tank.
+                targetHealth.TakeDamage(50f);
+                m_AgentLauncher.AddReward(.4f);
+                // Unparent the particles from the shell.
+                m_ExplosionParticles.transform.parent = null;
 
-            // Deal this damage to the tank.
-            targetHealth.TakeDamage(50f);
+                // Play the particle system.
+                m_ExplosionParticles.Play();
 
-            // Unparent the particles from the shell.
-            m_ExplosionParticles.transform.parent = null;
-
-            // Play the particle system.
-            m_ExplosionParticles.Play();
-
-            // Once the particles have finished, destroy the gameobject they are on.
-            ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-            Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+                // Once the particles have finished, destroy the gameobject they are on.
+                ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
+                Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+            }
+            else{
+                m_AgentLauncher.AddReward(-.1f);
+            }
 
             // Destroy the shell.
             Destroy(gameObject);

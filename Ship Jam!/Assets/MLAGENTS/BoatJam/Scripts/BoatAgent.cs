@@ -54,6 +54,8 @@ public class BoatAgent : Agent
 
     BehaviorParameters m_BehaviorParameters;
 
+    public bool useContinuousActions = false;
+
     /// <summary>
     /// Shoot the cannonball
     /// </summary>
@@ -202,10 +204,40 @@ public class BoatAgent : Agent
     {
         if (Time.time > m_NextFire)
         {
-            actionMask.SetActionEnabled(2, 0, false);
-            actionMask.SetActionEnabled(2, 1, false);
+            if(useContinuousActions)
+            {
+                actionMask.SetActionEnabled(1, 0, false);
+                actionMask.SetActionEnabled(1, 1, false);
+            }
+            else
+            {
+                actionMask.SetActionEnabled(2, 0, false);
+                actionMask.SetActionEnabled(2, 1, false);
+            }
         }
     }
+
+    public void AgentActionConituous(ActionBuffers vectorAction)
+    {
+        float speed = 5f * Time.deltaTime;
+        float rotateSpeed = 180f * Time.deltaTime;
+        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed;
+        transform.localPosition += transform.forward * moveVal;
+        AddReward(-1/(15+moveVal) * Time.deltaTime);
+        transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed);
+
+        if(Time.time > m_NextFire && Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.25f)
+        {
+            // Left Small shoot (20)
+            m_ShootForce = 20f;
+            // Update the time when our player can fire next
+            m_NextFire = Time.time + 1.5f;
+            shootCannonball(m_ShootForce, Mathf.Sign(vectorAction.ContinuousActions[2]) > 0? "right" : "left");
+            m_PossibleShoot = false;
+
+        }
+    }
+
     /// <summary>
     /// Function to move the agent
     /// </summary>
@@ -335,44 +367,67 @@ public class BoatAgent : Agent
     /// <param name="actionsOut"></param>
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        var discreteActionsOut = actionsOut.DiscreteActions;
-        discreteActionsOut.Clear();
+        if(useContinuousActions)
+        {
+            var continuousActions = actionsOut.ContinuousActions;
+            continuousActions.Clear();
+            continuousActions[0] = Input.GetAxis("Vertical");
 
-        //forward
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            discreteActionsOut[0] = 1;
+            // rotate
+
+            continuousActions[1] = Input.GetAxis("Horizontal");
+
+            //shoot
+            if (Input.GetKey(KeyCode.G))
+            {
+                continuousActions[2] = 0.5f;
+            }
+            else if (Input.GetKey(KeyCode.H))
+            {
+                continuousActions[2] = -0.5f;
+            }
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        else
         {
-            discreteActionsOut[0] = 2;
+            var discreteActionsOut = actionsOut.DiscreteActions;
+            discreteActionsOut.Clear();
+
+            //forward
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                discreteActionsOut[0] = 1;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                discreteActionsOut[0] = 2;
+            }
+            // rotate
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                discreteActionsOut[1] = 1;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                discreteActionsOut[1] = 2;
+            }
+            //shoot
+            if (Input.GetKey(KeyCode.G))
+            {
+                discreteActionsOut[2] = 1;
+            }
+            if (Input.GetKey(KeyCode.H))
+            {
+                discreteActionsOut[2] = 2;
+            }
+            /*if (Input.GetKey(KeyCode.H))
+            {
+                discreteActionsOut[2] = 2;
+            }
+            if (Input.GetKey(KeyCode.J))
+            {
+                discreteActionsOut[2] = 3;
+            }*/
         }
-        // rotate
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            discreteActionsOut[1] = 1;
-        }
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            discreteActionsOut[1] = 2;
-        }
-        //shoot
-        if (Input.GetKey(KeyCode.G))
-        {
-            discreteActionsOut[2] = 1;
-        }
-        if (Input.GetKey(KeyCode.H))
-        {
-            discreteActionsOut[2] = 2;
-        }
-        /*if (Input.GetKey(KeyCode.H))
-        {
-            discreteActionsOut[2] = 2;
-        }
-        if (Input.GetKey(KeyCode.J))
-        {
-            discreteActionsOut[2] = 3;
-        }*/
     }
 
     /// <summary>
@@ -385,8 +440,24 @@ public class BoatAgent : Agent
         timePenalty -= m_Penalty;
 
         // Move the agent
-        MoveAgent(actions.DiscreteActions);
+        if(useContinuousActions)
+        {
+            AgentActionConituous(actions);
+        }
+        else
+        {
+            MoveAgent(actions.DiscreteActions);
+        }
 
+    }
+
+    private void OnCollisionStay(Collision other) {
+        if(other.gameObject.CompareTag("border") || other.gameObject.CompareTag("island") 
+            || other.gameObject.CompareTag("greenAgent") || other.gameObject.CompareTag("blueAgent"))
+        {
+            m_BoatHealthSystem.TakeDamage(10f * Time.deltaTime);
+            AddReward(-0.25f * Time.deltaTime);
+        }
     }
 }
 
