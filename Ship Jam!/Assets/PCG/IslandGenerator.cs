@@ -33,11 +33,11 @@ public class IslandGenerator : MonoBehaviour
         public Vector2 position;
         public float radius;
     }
-    /*
+
     private void Start()
     {
         Generate();
-    }*/
+    }
 
     public void Generate()
     {
@@ -124,7 +124,6 @@ public class IslandGenerator : MonoBehaviour
                 i.OnEnable();
             }
         }
-
     }
 
     private void OnDrawGizmos()
