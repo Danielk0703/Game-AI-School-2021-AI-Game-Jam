@@ -27,48 +27,16 @@ public class BoatArea : MonoBehaviour
     SimpleMultiAgentGroup team1AgentGroup = new SimpleMultiAgentGroup();
     // List containing the agent prefabs
     public GameObject agent;
+    public List<BoatAgent> GetEnemies(int teamId)
+    {
+        return teamId == 1 ? team0Agents : team1Agents;
+    }
+    public List<BoatAgent> GetAllies(GameObject warrior, int teamId)
+    {
+        return teamId == 0 ? team0Agents.FindAll(w => w.gameObject != warrior) : team1Agents.FindAll(w => w.gameObject != warrior);
+    }
 
-    public int currentDifficulty = 1;
-    // public bool enableDifficulty1 = false;
-    // public bool enableDifficulty2 = false;
-    // public bool enableDifficulty3 = false;
-    // public bool enableDifficulty4 = false;
-    // private void OnValidate()
-    // {
-    //     if (enableDifficulty1)
-    //     {
-    //         transform.Find("IslandScene").gameObject.SetActive(false);
-    //         transform.Find("Boundaries").localScale = Vector3.one * 0.75f;
-    //         transform.Find("Team 0 Spawn Area").localScale = Vector3.one * 0.75f;
-    //         transform.Find("Team 1 Spawn Area").localScale = Vector3.one * 0.75f;
-    //         transform.Find("Team 0 Spawn Area").position = new Vector3(12, 0.4f, 0.9f);
-    //         transform.Find("Team 1 Spawn Area").position = new Vector3(-14.4f, 0.4f, 0.9f);
-    //         enableDifficulty1 = false;
-    //     }
-    //     else if (enableDifficulty2)
-    //     {
-    //         transform.Find("IslandScene").gameObject.SetActive(false);
-    //         transform.Find("Boundaries").localScale = Vector3.one;
-    //         transform.Find("Team 0 Spawn Area").localScale = Vector3.one;
-    //         transform.Find("Team 1 Spawn Area").localScale = Vector3.one;
-    //         transform.Find("Team 0 Spawn Area").position = new Vector3(18, 0.4f, 0.9f);
-    //         transform.Find("Team 1 Spawn Area").position = new Vector3(-22, 0.4f, 0.9f);
-    //         enableDifficulty2 = false;
-    //     }
-    //     else if (enableDifficulty3)
-    //     {
-    //         transform.Find("IslandScene").gameObject.SetActive(true);
-    //         GetComponentInChildren<IslandGenerator>().maxIslandCount = 5;
-    //         GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 5f;
-    //         enableDifficulty3 = false;
-    //     }
-    //     else if (enableDifficulty4)
-    //     {
-    //         GetComponentInChildren<IslandGenerator>().maxIslandCount = 13;
-    //         GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 1f;
-    //         enableDifficulty4 = false;
-    //     }
-    // }
+    public int currentDifficulty = 3;
     private void Awake()
     {
         Initialize();
@@ -127,6 +95,14 @@ public class BoatArea : MonoBehaviour
             agent.enabled = true;
         foreach (BoatAgent agent in team1Agents)
             agent.enabled = true;
+
+        if (agent.GetComponent<BehaviorParameters>().Model != null)
+        {
+            transform.Find("IslandScene").gameObject.SetActive(true);
+            GetComponentInChildren<IslandGenerator>().maxIslandCount = 13;
+            GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 1f;
+            currentDifficulty = 5;
+        }
 
         try
         {
@@ -226,6 +202,43 @@ public class BoatArea : MonoBehaviour
         if (GetComponentInChildren<IslandGenerator>(true).enabled)
             GetComponentInChildren<IslandGenerator>(true).Generate();
 
+        float level = Academy.Instance.StepCount + 19776171;
+        if (currentDifficulty == 1 && level >= 10000000)
+        {
+            print("Reached level " + level + " " + currentDifficulty);
+            transform.Find("Boundaries").localScale = Vector3.one;
+            transform.Find("Team 0 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 1 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 0 Spawn Area").position = new Vector3(18, 0.4f, 0.9f);
+            transform.Find("Team 1 Spawn Area").position = new Vector3(-22, 0.4f, 0.9f);
+            currentDifficulty++;
+        }
+        else if (currentDifficulty == 2 && level >= 16000000)
+        {
+            print("Reached level " + level + " " + currentDifficulty);
+            transform.Find("IslandScene").gameObject.SetActive(true);
+            GetComponentInChildren<IslandGenerator>().maxIslandCount = 5;
+            GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 5f;
+            transform.Find("Team 0 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 1 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 0 Spawn Area").position = new Vector3(18, 0.4f, 0.9f);
+            transform.Find("Team 1 Spawn Area").position = new Vector3(-22, 0.4f, 0.9f);
+            currentDifficulty++;
+        }
+        else if (currentDifficulty == 3 && level >= 18000000)
+        {
+            print("Reached level " + level + " " + currentDifficulty);
+            transform.Find("Boundaries").localScale = Vector3.one;
+            transform.Find("IslandScene").gameObject.SetActive(true);
+            GetComponentInChildren<IslandGenerator>().maxIslandCount = 13;
+            GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 1f;
+            transform.Find("Team 0 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 1 Spawn Area").localScale = Vector3.one;
+            transform.Find("Team 0 Spawn Area").position = new Vector3(18, 0.4f, 0.9f);
+            transform.Find("Team 1 Spawn Area").position = new Vector3(-22, 0.4f, 0.9f);
+            currentDifficulty++;
+        }
+
         foreach (BoatAgent agent in team0Agents)
         {
             agent.transform.localEulerAngles = GetRandomRotation();
@@ -249,31 +262,5 @@ public class BoatArea : MonoBehaviour
             team1AgentGroup.RegisterAgent(agent);
         }
 
-        float level = Academy.Instance.StepCount + 13859801;
-        if (currentDifficulty == 1 && level >= 10000000)
-        {
-            print("Reached level " + level);
-            transform.Find("Boundaries").localScale = Vector3.one;
-            transform.Find("Team 0 Spawn Area").localScale = Vector3.one;
-            transform.Find("Team 1 Spawn Area").localScale = Vector3.one;
-            transform.Find("Team 0 Spawn Area").position = new Vector3(18, 0.4f, 0.9f);
-            transform.Find("Team 1 Spawn Area").position = new Vector3(-22, 0.4f, 0.9f);
-            currentDifficulty++;
-        }
-        else if (currentDifficulty == 2 && level >= 16000000)
-        {
-            print("Reached level " + level);
-            transform.Find("IslandScene").gameObject.SetActive(true);
-            GetComponentInChildren<IslandGenerator>().maxIslandCount = 5;
-            GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 5f;
-            currentDifficulty++;
-        }
-        else if (currentDifficulty == 3 && level >= 18000000)
-        {
-            print("Reached level " + level);
-            GetComponentInChildren<IslandGenerator>().maxIslandCount = 13;
-            GetComponentInChildren<IslandGenerator>().extraDistanceBetweenIslands = 1f;
-            currentDifficulty++;
-        }
     }
 }

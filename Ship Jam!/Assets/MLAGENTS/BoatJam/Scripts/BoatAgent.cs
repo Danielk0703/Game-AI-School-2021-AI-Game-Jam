@@ -6,6 +6,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Extensions.Sensors;
+using System.Linq;
 
 /// <summary>
 /// What team we are
@@ -111,13 +112,11 @@ public class BoatAgent : Agent
 
     public void HitTarget()
     {
-        print(0.5f / GetComponentInParent<BoatArea>().Team0Size);
         AddReward(0.5f / GetComponentInParent<BoatArea>().Team0Size);
     }
     public void TakeDamage(float damage)
     {
         m_BoatHealthSystem.TakeDamage(damage);
-        print(-damage / m_BoatHealthSystem.m_StartingHealth);
         AddReward(-damage / m_BoatHealthSystem.m_StartingHealth);
     }
 
@@ -203,7 +202,8 @@ public class BoatAgent : Agent
     /// <param name="actionMask"></param>
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
-        if (Time.time > m_NextFire)
+        BoatAgent closestEnemy = GetComponentInParent<BoatArea>().GetEnemies(GetComponent<BehaviorParameters>().TeamId).OrderBy(b => Vector3.Distance(b.transform.position, transform.position)).ToList()[0];
+        if (Time.time > m_NextFire && Vector3.Distance(transform.position, closestEnemy.transform.position) >= 10f)
         {
             actionMask.SetActionEnabled(2, 0, false);
             actionMask.SetActionEnabled(2, 1, false);
