@@ -2753,7 +2753,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "The ships are trained \nML-Agents Neural Networks.\n\nCan you beat it?\n\n<color=#ffff00>Game
     Controls</color>\n  - Accelerate -> <color=#ffff00>W</color>\n  - Decelerate
-    -> <color=#ffff00>W</color>\n  - Steer Left -> <color=#ffff00>A</color>\n  -
+    -> <color=#ffff00>S</color>\n  - Steer Left -> <color=#ffff00>A</color>\n  -
     Steer Right -> <color=#ffff00>D</color>\n  - Shoot Left -> <color=#ffff00>Arrow
     Left</color>\n  - Shoot Right -> <color=#ffff00>Arrow Right</color>\n<color=#ffff00>Hint:</color>
     You are <color=#ff5555>Red</color>"
