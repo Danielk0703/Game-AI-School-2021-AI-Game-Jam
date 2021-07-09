@@ -169,7 +169,6 @@ public class BoatAgent : Agent
 
         if (m_PlayerIndex == 0)
         {
-            Debug.LogError("OnEpisodeBegin " + this.name + this.transform.parent.name, this.gameObject);
             m_Area.PlaceAssets();
         }
         // Place the agent

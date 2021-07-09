@@ -44,7 +44,6 @@ public class BoatArea : MonoBehaviour
         //{
         if (spawnPointsTemp.Count <= 0)
         {
-            Debug.LogError("No spawn Points");
             // Not enough spawn points
             return;
         }

@@ -904,6 +904,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3516160020807797062, guid: 5d30e5a0f3fcd87449755c8443139318, type: 3}
+      propertyPath: m_Time
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4647473288089815944, guid: 5d30e5a0f3fcd87449755c8443139318, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1192,6 +1196,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 27
       objectReference: {fileID: 0}
+    - target: {fileID: 7950187500663692437, guid: 5d30e5a0f3fcd87449755c8443139318, type: 3}
+      propertyPath: m_Time
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d30e5a0f3fcd87449755c8443139318, type: 3}
 --- !u!114 &1712439788 stripped
@@ -1258,7 +1266,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 80
+  MaxDistance: 50
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -1354,7 +1362,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 0
-  MaxDistance: 80
+  MaxDistance: 50
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
