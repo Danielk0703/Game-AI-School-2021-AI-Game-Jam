@@ -64,7 +64,7 @@ public class BoatHealth : MonoBehaviour
         m_CurrentHealth -= amount;
 
         // Give 0.25 to the one not attacked, -0.25 the one receive the boulder (not the best way)
-       
+
         //distributeDamageReward();
 
         // Change the UI elements appropriately.
@@ -99,12 +99,5 @@ public class BoatHealth : MonoBehaviour
         // Call
         m_Agent = gameObject.GetComponent<BoatAgent>();
         m_Agent.beingKilled();
-    }
-
-    private void distributeDamageReward()
-    {
-        // Call
-        m_Agent = gameObject.GetComponent<BoatAgent>();
-        m_Agent.distributeDamageReward();
     }
 }

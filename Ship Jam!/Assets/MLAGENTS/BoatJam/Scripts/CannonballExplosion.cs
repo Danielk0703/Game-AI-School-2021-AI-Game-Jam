@@ -12,7 +12,6 @@ public class CannonballExplosion : MonoBehaviour
     public float m_MaxLifeTime = 2f;                    // The time in seconds before the shell is removed.
     public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
     public BoatAgent m_AgentLauncher;                   // The Agent who launched this shell (used to calculate the reward
-
     private void Start()
     {
         // If it isn't destroyed by then, destroy the shell after it's lifetime.
@@ -26,14 +25,22 @@ public class CannonballExplosion : MonoBehaviour
         if (targetRigidbody)
         {
             // Find the BoatHealth script associated with the rigidbody.
-            BoatHealth targetHealth = targetRigidbody.GetComponent<BoatHealth>();
+            BoatAgent targetHealth = targetRigidbody.GetComponent<BoatAgent>();
 
             // If there is no BoatHealth script attached to the gameobject, go on to the next collider.
-            if (!targetHealth)
+            if (targetHealth == null)
+            {
                 Destroy(gameObject);
+                return;
+            }
+            else if (collision.CompareTag(m_AgentLauncher.tag))
+            {
+                return;
+            }
 
             // Deal this damage to the tank.
             targetHealth.TakeDamage(50f);
+            m_AgentLauncher.HitTarget();
 
             // Unparent the particles from the shell.
             m_ExplosionParticles.transform.parent = null;
@@ -54,6 +61,6 @@ public class CannonballExplosion : MonoBehaviour
             Destroy(gameObject);
         }
     }
-        
+
 
 }

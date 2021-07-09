@@ -9,8 +9,11 @@ TagManager:
   - greenAgent
   - blueAgent
   - border
-  - island
   - islandObstacle
+  - Team 0
+  - Team 1
+  - Island
+  - island
   layers:
   - Default
   - TransparentFX
@@ -18,9 +21,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Ships
+  - Cannonballs
+  - Cliffs
   - 
   - 
   - 

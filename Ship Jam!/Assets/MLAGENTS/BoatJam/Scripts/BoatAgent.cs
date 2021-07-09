@@ -7,17 +7,17 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Extensions.Sensors;
 
+/// <summary>
+/// What team we are
+/// </summary>
+public enum Team
+{
+    Green = 0,
+    Blue = 1,
+}
+
 public class BoatAgent : Agent
 {
-
-    /// <summary>
-    /// What team we are
-    /// </summary>
-    public enum Team
-    {
-        Green = 0,
-        Blue = 1,
-    }
 
     [HideInInspector]
     public Team team;
@@ -53,6 +53,17 @@ public class BoatAgent : Agent
     public Transform m_CenterOfMap;
 
     BehaviorParameters m_BehaviorParameters;
+    public bool IsAlive { get { return m_BoatHealthSystem.GetHealthStatus() > 0; } }
+    public bool IsDead { get { return m_BoatHealthSystem.GetHealthStatus() == 0; } }
+    public bool kill = false;
+    private void OnValidate()
+    {
+        if (kill == true)
+        {
+            kill = false;
+            m_BoatHealthSystem.TakeDamage(100);
+        }
+    }
 
     /// <summary>
     /// Shoot the cannonball
@@ -88,22 +99,26 @@ public class BoatAgent : Agent
         // Change the clip to the firing clip and play it.
         //m_ShootingAudio.clip = m_FireClip;
         //m_ShootingAudio.Play();
-        }
+    }
 
     /// <summary>
     /// Call Area CannonballKilled() function when someone is dead
     /// </summary>
     public void beingKilled()
     {
-        m_Area.CannonballKilled(team);
+        gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Call Area distributeDamageReward() function when someone is touched by a cannonball
-    /// </summary>
-    public void distributeDamageReward()
+    public void HitTarget()
     {
-        m_Area.distributeDamageReward(team);
+        print(0.5f / GetComponentInParent<BoatArea>().Team0Size);
+        AddReward(0.5f / GetComponentInParent<BoatArea>().Team0Size);
+    }
+    public void TakeDamage(float damage)
+    {
+        m_BoatHealthSystem.TakeDamage(damage);
+        print(-damage / m_BoatHealthSystem.m_StartingHealth);
+        AddReward(-damage / m_BoatHealthSystem.m_StartingHealth);
     }
 
     /// <summary>
@@ -111,9 +126,6 @@ public class BoatAgent : Agent
     /// </summary>
     public override void Initialize()
     {
-        // Calculate the penality rate (this push our agent to meet faster its goal)
-        m_Penalty = 1f / MaxStep;
-
         // Get the behavior parameters (to get the team)
         m_BehaviorParameters = gameObject.GetComponent<BehaviorParameters>();
 
@@ -160,14 +172,6 @@ public class BoatAgent : Agent
         // Reset the health
         m_BoatHealthSystem.ResetHealth();
 
-        if (m_PlayerIndex == 0)
-        {
-            m_Area.PlaceAssets();
-        }
-        // Place the agent
-        m_Area.PlaceAgent(m_AgentRb);
-        //transform.LookAt(m_CenterOfMap);
-
         m_AgentRb.velocity = Vector3.zero;
         m_AgentRb.angularVelocity = Vector3.zero;
     }
@@ -193,7 +197,6 @@ public class BoatAgent : Agent
         //Debug.Log("m_LeftFireTransform" + m_LeftFireTransform.localRotation.y);
         // Right Canon rotation
     }
-    
     /// <summary>
     /// If it's before spamming time we mask the shooting action
     /// </summary>
@@ -254,23 +257,23 @@ public class BoatAgent : Agent
                     m_PossibleShoot = false;
                     break;
 
-                    /* Middle shoot (20)
-                    case 2:
-                        m_ShootForce = 20f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;
+                /* Middle shoot (20)
+                case 2:
+                    m_ShootForce = 20f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;
 
-                    // Fast shoot (25)
-                    case 3:
-                        m_ShootForce = 25f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;*/
+                // Fast shoot (25)
+                case 3:
+                    m_ShootForce = 25f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;*/
                 // Right Small shoot (15)
                 case 2:
                     m_ShootForce = 20f;
