@@ -13,6 +13,9 @@ public class CannonballExplosion : MonoBehaviour
     public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
     public BoatAgent m_AgentLauncher;                   // The Agent who launched this shell (used to calculate the reward
 
+    public TrailRenderer m_trailRenderer;
+    public ParticleSystem m_destroyParicles;
+
     private void Start()
     {
         // If it isn't destroyed by then, destroy the shell after it's lifetime.
@@ -35,7 +38,7 @@ public class CannonballExplosion : MonoBehaviour
                 targetHealth.TakeDamage(50f);
                 m_AgentLauncher.AddReward(20f);
                 // Unparent the particles from the shell.
-                m_ExplosionParticles.transform.parent = null;
+                m_ExplosionParticles.transform.parent = null;                
 
                 // Play the particle system.
                 m_ExplosionParticles.Play();
@@ -58,6 +61,16 @@ public class CannonballExplosion : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void OnDestroy() {
+        m_destroyParicles.transform.parent = null;
+        m_destroyParicles.Play();
+        Destroy(m_destroyParicles.gameObject, m_destroyParicles.main.duration);
+
+        m_trailRenderer.transform.parent = null;
+        Destroy(m_trailRenderer.gameObject, m_trailRenderer.time);
+    }
         
 
 }
+

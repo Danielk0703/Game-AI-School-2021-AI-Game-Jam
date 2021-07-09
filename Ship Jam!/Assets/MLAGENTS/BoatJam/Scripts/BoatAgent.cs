@@ -57,6 +57,8 @@ public class BoatAgent : Agent
 
     public bool useContinuousActions = false;
 
+    public AudioSource fireSound;
+
     /// <summary>
     /// Shoot the cannonball
     /// </summary>
@@ -85,6 +87,8 @@ public class BoatAgent : Agent
             // Set the shell's velocity to the launch force (discrete) in the fire position's forward direction.
             cannonballInstance.velocity = m_ShootForce * m_RightFireTransform.forward;
         }
+        fireSound.Play();
+        AddReward(-5f);
 
         // I let the audio if we have time
 
@@ -228,15 +232,14 @@ public class BoatAgent : Agent
     {
         const float speed = 5f ;
         const float rotateSpeed = 180f;
-        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed * Time.deltaTime;
-        transform.localPosition += transform.forward * moveVal ;
-        AddReward(moveVal);
-        AddReward(1f/(1f + Vector3.SqrMagnitude(m_AgentRb.transform.localPosition - m_EnemyAgentRb.transform.localPosition)));
+        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed ;
+        transform.localPosition += transform.forward * moveVal * Time.deltaTime;
+        AddReward(moveVal/(1f + Vector3.Distance(m_AgentRb.transform.localPosition, m_EnemyAgentRb.transform.localPosition)));
         transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed  * Time.deltaTime);
         if(Time.time > m_NextFire)
         {
             m_PossibleShoot = true;
-            if(Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.25f)
+            if(Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.3f)
             {
                 // Left Small shoot (20)
                 m_ShootForce = 20f;
@@ -467,7 +470,7 @@ public class BoatAgent : Agent
             || other.gameObject.CompareTag("greenAgent") || other.gameObject.CompareTag("blueAgent"))
         {
             m_BoatHealthSystem.TakeDamage(10f * Time.deltaTime);
-            AddReward(-10*Time.deltaTime);
+            AddReward(-10f*Time.deltaTime);
         }
     }
 }
