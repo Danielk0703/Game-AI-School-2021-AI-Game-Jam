@@ -9,7 +9,6 @@ using Unity.MLAgents.Extensions.Sensors;
 
 public class BoatAgent : Agent
 {
-
     /// <summary>
     /// What team we are
     /// </summary>
@@ -35,12 +34,14 @@ public class BoatAgent : Agent
 
     [HideInInspector]
     public float m_ShootForce;
+
     public Rigidbody m_Cannonball; // Prefab of the cannonball.
 
     public float m_Health;
 
     [HideInInspector]
     public float m_Penalty;
+
     [HideInInspector]
     public float timePenalty;
 
@@ -87,7 +88,9 @@ public class BoatAgent : Agent
             // Set the shell's velocity to the launch force (discrete) in the fire position's forward direction.
             cannonballInstance.velocity = m_ShootForce * m_RightFireTransform.forward;
         }
-        fireSound.Play();
+
+        if (fireSound.enabled)
+            fireSound.Play();
         AddReward(-5f);
 
         // I let the audio if we have time
@@ -95,7 +98,7 @@ public class BoatAgent : Agent
         // Change the clip to the firing clip and play it.
         //m_ShootingAudio.clip = m_FireClip;
         //m_ShootingAudio.Play();
-        }
+    }
 
     /// <summary>
     /// Call Area CannonballKilled() function when someone is dead
@@ -125,11 +128,11 @@ public class BoatAgent : Agent
         m_BehaviorParameters = gameObject.GetComponent<BehaviorParameters>();
 
         // Place the agent based on its team
-        if (m_BehaviorParameters.TeamId == (int)Team.Red)
+        if (m_BehaviorParameters.TeamId == (int) Team.Red)
         {
             team = Team.Red;
         }
-        else if (m_BehaviorParameters.TeamId == (int)Team.Blue)
+        else if (m_BehaviorParameters.TeamId == (int) Team.Blue)
         {
             team = Team.Blue;
         }
@@ -171,6 +174,7 @@ public class BoatAgent : Agent
         {
             m_Area.PlaceAssets();
         }
+
         // Place the agent
         m_Area.PlaceAgent(m_AgentRb);
         //transform.LookAt(m_CenterOfMap);
@@ -193,7 +197,7 @@ public class BoatAgent : Agent
 
         // TODO: Left and right cannon rotation?
         // Left Canon rotation ?
-        Vector3 scaleVec = new Vector3 (1/m_Area.mapBoundsCollider.bounds.size.x, 1, 1/m_Area.mapBoundsCollider.bounds.size.z);
+        Vector3 scaleVec = new Vector3(1 / m_Area.mapBoundsCollider.bounds.size.x, 1, 1 / m_Area.mapBoundsCollider.bounds.size.z);
         Vector3 myNormalizedPos = Vector3.Scale(m_AgentRb.transform.localPosition, scaleVec);
         Vector3 enemyNormalizedPos = Vector3.Scale(m_EnemyAgentRb.transform.localPosition, scaleVec);
         sensor.AddObservation(myNormalizedPos);
@@ -205,7 +209,7 @@ public class BoatAgent : Agent
         //Debug.Log("m_LeftFireTransform" + m_LeftFireTransform.localRotation.y);
         // Right Canon rotation
     }
-    
+
     /// <summary>
     /// If it's before spamming time we mask the shooting action
     /// </summary>
@@ -214,7 +218,7 @@ public class BoatAgent : Agent
     {
         if (Time.time > m_NextFire)
         {
-            if(useContinuousActions)
+            if (useContinuousActions)
             {
                 actionMask.SetActionEnabled(1, 0, false);
                 actionMask.SetActionEnabled(1, 1, false);
@@ -229,24 +233,23 @@ public class BoatAgent : Agent
 
     public void AgentActionConituous(ActionBuffers vectorAction)
     {
-        const float speed = 5f ;
+        const float speed = 5f;
         const float rotateSpeed = 180f;
-        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) /1.5f) * speed ;
+        float moveVal = Mathf.Clamp01((0.5f + vectorAction.ContinuousActions[0]) / 1.5f) * speed;
         transform.localPosition += transform.forward * moveVal * Time.deltaTime;
-        AddReward(moveVal/(1f + Vector3.Distance(m_AgentRb.transform.localPosition, m_EnemyAgentRb.transform.localPosition)));
-        transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed  * Time.deltaTime);
-        if(Time.time > m_NextFire)
+        AddReward(moveVal / (1f + Vector3.Distance(m_AgentRb.transform.localPosition, m_EnemyAgentRb.transform.localPosition)));
+        transform.Rotate(transform.up, vectorAction.ContinuousActions[1] * rotateSpeed * Time.deltaTime);
+        if (Time.time > m_NextFire)
         {
             m_PossibleShoot = true;
-            if(Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.3f)
+            if (Mathf.Abs(vectorAction.ContinuousActions[2]) > 0.3f)
             {
                 // Left Small shoot (20)
                 m_ShootForce = 20f;
                 // Update the time when our player can fire next
                 m_NextFire = Time.time + 1.5f;
-                shootCannonball(m_ShootForce, Mathf.Sign(vectorAction.ContinuousActions[2]) > 0? "right" : "left");
+                shootCannonball(m_ShootForce, Mathf.Sign(vectorAction.ContinuousActions[2]) > 0 ? "right" : "left");
                 m_PossibleShoot = false;
-
             }
         }
     }
@@ -278,6 +281,7 @@ public class BoatAgent : Agent
                     dirToGo = transform.forward * -1f;
                     break;
             }
+
             switch (rotate)
             {
                 // Rotation left/right
@@ -288,6 +292,7 @@ public class BoatAgent : Agent
                     rotateDir = transform.up * -1f;
                     break;
             }
+
             switch (shoot)
             {
                 // Left Small shoot (20)
@@ -299,23 +304,23 @@ public class BoatAgent : Agent
                     m_PossibleShoot = false;
                     break;
 
-                    /* Middle shoot (20)
-                    case 2:
-                        m_ShootForce = 20f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;
+                /* Middle shoot (20)
+                case 2:
+                    m_ShootForce = 20f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;
 
-                    // Fast shoot (25)
-                    case 3:
-                        m_ShootForce = 25f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;*/
+                // Fast shoot (25)
+                case 3:
+                    m_ShootForce = 25f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;*/
                 // Right Small shoot (15)
                 case 2:
                     m_ShootForce = 20f;
@@ -325,23 +330,23 @@ public class BoatAgent : Agent
                     m_PossibleShoot = false;
                     break;
 
-                    /* Middle shoot (20)
-                    case 2:
-                        m_ShootForce = 20f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;
+                /* Middle shoot (20)
+                case 2:
+                    m_ShootForce = 20f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;
 
-                    // Fast shoot (25)
-                    case 3:
-                        m_ShootForce = 25f;
-                        // Update the time when our player can fire next
-                        m_NextFire = Time.time + 1.5f;
-                        shootShell(m_ShootForce);
-                        m_PossibleShoot = false;
-                        break;*/
+                // Fast shoot (25)
+                case 3:
+                    m_ShootForce = 25f;
+                    // Update the time when our player can fire next
+                    m_NextFire = Time.time + 1.5f;
+                    shootShell(m_ShootForce);
+                    m_PossibleShoot = false;
+                    break;*/
             }
         }
         else
@@ -355,8 +360,8 @@ public class BoatAgent : Agent
                 case 2:
                     dirToGo = transform.forward * -1f;
                     break;
-
             }
+
             switch (rotate)
             {
                 // Rotation left/right
@@ -380,7 +385,7 @@ public class BoatAgent : Agent
     /// <param name="actionsOut"></param>
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        if(useContinuousActions)
+        if (useContinuousActions)
         {
             var continuousActions = actionsOut.ContinuousActions;
             continuousActions.Clear();
@@ -410,24 +415,29 @@ public class BoatAgent : Agent
             {
                 discreteActionsOut[0] = 1;
             }
+
             if (Input.GetKey(KeyCode.DownArrow))
             {
                 discreteActionsOut[0] = 2;
             }
+
             // rotate
             if (Input.GetKey(KeyCode.LeftArrow))
             {
                 discreteActionsOut[1] = 1;
             }
+
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 discreteActionsOut[1] = 2;
             }
+
             //shoot
             if (Input.GetKey(KeyCode.G))
             {
                 discreteActionsOut[2] = 1;
             }
+
             if (Input.GetKey(KeyCode.H))
             {
                 discreteActionsOut[2] = 2;
@@ -453,7 +463,7 @@ public class BoatAgent : Agent
         timePenalty -= m_Penalty;
 
         // Move the agent
-        if(useContinuousActions)
+        if (useContinuousActions)
         {
             AgentActionConituous(actions);
         }
@@ -461,17 +471,15 @@ public class BoatAgent : Agent
         {
             MoveAgent(actions.DiscreteActions);
         }
-
     }
 
-    private void OnCollisionStay(Collision other) {
-        if(other.gameObject.CompareTag("border") || other.gameObject.CompareTag("island") || other.gameObject.CompareTag("islandObstacle") 
+    private void OnCollisionStay(Collision other)
+    {
+        if (other.gameObject.CompareTag("border") || other.gameObject.CompareTag("island") || other.gameObject.CompareTag("islandObstacle")
             || other.gameObject.CompareTag("greenAgent") || other.gameObject.CompareTag("blueAgent"))
         {
             m_BoatHealthSystem.TakeDamage(10f * Time.deltaTime);
-            AddReward(-10f*Time.deltaTime);
+            AddReward(-10f * Time.deltaTime);
         }
     }
 }
-
-
