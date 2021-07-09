@@ -4,12 +4,21 @@ Ahoy young pirate 🏴‍☠🦜! Will you be able to beat our pAIrate?
 
 This game was made during **International Summer School on AI and Games 3rd Edition** (05. - 09.07.2021).
 
-You can download the built version [here](https://danielk0703.itch.io/ship-jam).
+### Repo and download
+
+Check out the repo [here](https://github.com/Danielk0703/Game-AI-School-2021-AI-Game-Jam).
+
+Download the built version [here](https://danielk0703.itch.io/ship-jam).
+
+### Check out our video!
+
+[![Ship Jam! Video](http://img.youtube.com/vi/mNmoC6lY2u8/0.jpg)](http://www.youtube.com/watch?v=mNmoC6lY2u8 "Ship Jam! Video")
 
 This AI was trained with Deep Reinforcement Learning, using the Unity ML-Agents toolkit!
+
 For more information check the Unity’s [ML-Agent](https://github.com/Unity-Technologies/ml-agents) website.
 
-###Ship controls
+### Ship controls
 - W - Accelerate
 - S - Decelerate
 - A - Steer left
@@ -17,7 +26,7 @@ For more information check the Unity’s [ML-Agent](https://github.com/Unity-Tec
 - Arrow left - Shoot left
 - Arrow right - Shoot right
 
-###Team members and their tasks
+### Team members and their tasks
 - **Danielk0703**
     - Project leader / coordination / Git management
   - Basic UI setup and preparations
