@@ -30,25 +30,25 @@ public class GameManager : MonoBehaviour
     }
     
     private void Update() {
-        if(Input.GetMouseButtonDown(0))
-        {
-            Ray r = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(r, out RaycastHit hit, 100, agentLayerMask))
-            {
-                Agent hitAgent = hit.rigidbody?.GetComponent<Agent>();
-                if(hitAgent != null)
-                {
-                    if(currentPossesdAgent != null)
-                    {
-                        ReturnToBotControl(currentPossesdAgent);
-                        currentPossesdAgent = null;
-                    }
+        // if(Input.GetMouseButtonDown(0))
+        // {
+        //     Ray r = mainCamera.ScreenPointToRay(Input.mousePosition);
+        //     if(Physics.Raycast(r, out RaycastHit hit, 100, agentLayerMask))
+        //     {
+        //         Agent hitAgent = hit.rigidbody?.GetComponent<Agent>();
+        //         if(hitAgent != null)
+        //         {
+        //             if(currentPossesdAgent != null)
+        //             {
+        //                 ReturnToBotControl(currentPossesdAgent);
+        //                 currentPossesdAgent = null;
+        //             }
 
-                    TakePlayerControl(hitAgent);
-                    currentPossesdAgent = hitAgent;
-                }
-            }
-        }
+        //             TakePlayerControl(hitAgent);
+        //             currentPossesdAgent = hitAgent;
+        //         }
+        //     }
+        // }
     }
     
     public void TakePlayerControl(Agent targetAgent)

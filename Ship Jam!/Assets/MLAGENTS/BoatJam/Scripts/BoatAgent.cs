@@ -15,7 +15,7 @@ public class BoatAgent : Agent
     /// </summary>
     public enum Team
     {
-        Green = 0,
+        Red = 0,
         Blue = 1,
     }
 
@@ -125,9 +125,9 @@ public class BoatAgent : Agent
         m_BehaviorParameters = gameObject.GetComponent<BehaviorParameters>();
 
         // Place the agent based on its team
-        if (m_BehaviorParameters.TeamId == (int)Team.Green)
+        if (m_BehaviorParameters.TeamId == (int)Team.Red)
         {
-            team = Team.Green;
+            team = Team.Red;
         }
         else if (m_BehaviorParameters.TeamId == (int)Team.Blue)
         {
@@ -391,11 +391,11 @@ public class BoatAgent : Agent
             continuousActions[1] = Input.GetAxis("Horizontal");
 
             //shoot
-            if (Input.GetKey(KeyCode.G))
+            if (Input.GetKey(KeyCode.LeftArrow))
             {
                 continuousActions[2] = 0.5f;
             }
-            else if (Input.GetKey(KeyCode.H))
+            else if (Input.GetKey(KeyCode.RightArrow))
             {
                 continuousActions[2] = -0.5f;
             }

@@ -101,7 +101,14 @@ public class BoatArea : MonoBehaviour
         // Reset the spawnlist (we can't just say spawnPointsTemp = spawnPoints because it will reference the original list
         spawnPointsTemp = new List<GameObject>(spawnPoints);
         environmentSpawnPointsTemp = new List<GameObject>(environmentSpawnPoints);
-
+        if(touchedTeam == BoatAgent.Team.Red)
+        {
+            ScoreCounter.Get()?.AddScoreAi();
+        }
+        else
+        {
+            ScoreCounter.Get()?.AddScoreHuman();
+        }
         foreach (var ps in playerStates)
         {
             if (ps.agentScript.team == touchedTeam)
