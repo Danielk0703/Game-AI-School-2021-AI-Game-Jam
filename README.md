@@ -14,6 +14,12 @@ Download the built version [here](https://danielk0703.itch.io/ship-jam).
 
 [![Ship Jam! Video](http://img.youtube.com/vi/mNmoC6lY2u8/0.jpg)](http://www.youtube.com/watch?v=mNmoC6lY2u8 "Ship Jam! Video")
 
+### Game screenshots
+
+![Screenshot1](./Ship Jam!/Assets/Misc/Screenshot1.jpg?raw=true "Screenshot1")
+![Screenshot3](./Ship Jam!/Assets/Misc/Screenshot3.jpg?raw=true "Screenshot3")
+![Screenshot4](./Ship Jam!/Assets/Misc/Screenshot4.jpg?raw=true "Screenshot4")
+
 This AI was trained with Deep Reinforcement Learning, using the Unity ML-Agents toolkit!
 
 For more information check the Unity’s [ML-Agent](https://github.com/Unity-Technologies/ml-agents) website.
