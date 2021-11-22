@@ -237,6 +237,6 @@ public class IslandMeshGenerator : MonoBehaviour
 
     public void RepositionGridSensorCollider()
     {
-        gridSensorCollider.transform.position = new Vector3(transform.position.x, -2.36f, transform.position.z);
+        gridSensorCollider.transform.position = new Vector3(transform.position.x, -1.5f, transform.position.z);
     }
 }

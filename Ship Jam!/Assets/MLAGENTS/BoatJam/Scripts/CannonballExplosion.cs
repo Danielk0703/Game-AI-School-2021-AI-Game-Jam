@@ -13,6 +13,9 @@ public class CannonballExplosion : MonoBehaviour
     public float m_ExplosionRadius = 5f;                // The maximum distance away from the explosion tanks can be and are still affected.
     public BoatAgent m_AgentLauncher;                   // The Agent who launched this shell (used to calculate the reward
 
+    public TrailRenderer m_trailRenderer;
+    public ParticleSystem m_destroyParicles;
+
     private void Start()
     {
         // If it isn't destroyed by then, destroy the shell after it's lifetime.
@@ -29,21 +32,25 @@ public class CannonballExplosion : MonoBehaviour
             BoatHealth targetHealth = targetRigidbody.GetComponent<BoatHealth>();
 
             // If there is no BoatHealth script attached to the gameobject, go on to the next collider.
-            if (!targetHealth)
-                Destroy(gameObject);
+            if (targetHealth)
+            {
+                // Deal this damage to the tank.
+                targetHealth.TakeDamage(50f);
+                m_AgentLauncher.AddReward(20f);
+                // Unparent the particles from the shell.
+                m_ExplosionParticles.transform.parent = null;                
 
-            // Deal this damage to the tank.
-            targetHealth.TakeDamage(50f);
+                // Play the particle system.
+                m_ExplosionParticles.Play();
 
-            // Unparent the particles from the shell.
-            m_ExplosionParticles.transform.parent = null;
-
-            // Play the particle system.
-            m_ExplosionParticles.Play();
-
-            // Once the particles have finished, destroy the gameobject they are on.
-            ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
-            Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+                // Once the particles have finished, destroy the gameobject they are on.
+                ParticleSystem.MainModule mainModule = m_ExplosionParticles.main;
+                Destroy(m_ExplosionParticles.gameObject, mainModule.duration);
+            }
+            else
+            {
+                m_AgentLauncher.AddReward(-5f);
+            }
 
             // Destroy the shell.
             Destroy(gameObject);
@@ -54,6 +61,16 @@ public class CannonballExplosion : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void OnDestroy() {
+        m_destroyParicles.transform.parent = null;
+        m_destroyParicles.Play();
+        Destroy(m_destroyParicles.gameObject, m_destroyParicles.main.duration);
+
+        m_trailRenderer.transform.parent = null;
+        Destroy(m_trailRenderer.gameObject, m_trailRenderer.time);
+    }
         
 
 }
+

@@ -22,6 +22,10 @@ public class BoatArea : MonoBehaviour
     public List<GameObject> assets = new List<GameObject>();
     public GameObject assetsStore;
 
+    public Collider mapBoundsCollider;
+
+    public IslandGenerator islandGenerator;
+
     private void Awake()
     {
         // Reset the spawnlist for the first time
@@ -83,6 +87,8 @@ public class BoatArea : MonoBehaviour
             // Remove this spawnpoint to the temp spawnPoints list
             environmentSpawnPointsTemp.RemoveAt(randomIndex);
         }
+
+        islandGenerator?.Generate();
     }
 
     /// <summary>
@@ -95,20 +101,26 @@ public class BoatArea : MonoBehaviour
         // Reset the spawnlist (we can't just say spawnPointsTemp = spawnPoints because it will reference the original list
         spawnPointsTemp = new List<GameObject>(spawnPoints);
         environmentSpawnPointsTemp = new List<GameObject>(environmentSpawnPoints);
-
+        if(touchedTeam == BoatAgent.Team.Red)
+        {
+            ScoreCounter.Get()?.AddScoreAi();
+        }
+        else
+        {
+            ScoreCounter.Get()?.AddScoreHuman();
+        }
         foreach (var ps in playerStates)
         {
             if (ps.agentScript.team == touchedTeam)
             {
-                ps.agentScript.AddReward(-1);
+                ps.agentScript.AddReward(-100);
             }
             else
             {
-                ps.agentScript.AddReward(1f + ps.agentScript.timePenalty);
+                ps.agentScript.AddReward(100f);
             }
             ps.agentScript.EndEpisode();  //all agents need to be reset
         }
-
     }
 
     /// <summary>

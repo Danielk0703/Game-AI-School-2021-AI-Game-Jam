@@ -125,5 +125,12 @@ public class IslandGenerator : MonoBehaviour
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Vector3 center = transform.position + new Vector3(width/2, 0 , height/2);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(center,  new Vector3(width, 1, height));
+    }
+
 
 }
